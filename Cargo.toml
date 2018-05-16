@@ -1,0 +1,19 @@
+[package]
+name = "futures-tutorial"
+version = "0.1.0"
+authors = ["Sujay Jayakar <sujayakar314@gmail.com>"]
+
+[dependencies]
+hex-slice = "0.1.4"
+futures = "0.1.17"
+futures-cpupool = "0.1.8"
+rust-crypto = "0.2.36"
+
+[profile.release]
+opt-level = 3
+debug = false
+lto = true
+debug-assertions = false
+panic = "abort"
+overflow-checks = false
+incremental = false
