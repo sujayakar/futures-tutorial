@@ -315,13 +315,14 @@ macro_rules! async_boxed {
 
 fn hash_tree2(p: PathBuf, hash_pool: HashPool, io_pool: IOPool, semaphore: Semaphore) -> Box<Future<Item=[u8; 32], Error=io::Error>> {
     async_boxed!({
-        let guard = await!(semaphore.increment())?;
-        let result = if p.is_dir() {
+        if p.is_dir() {
+            let guard = await!(semaphore.increment())?;
             let mut paths = vec![];
             for entry in p.read_dir()? {
                 paths.push(entry?.path());
             }
             paths.sort();
+            drop(guard);
 
             let child_hashes = paths.into_iter()
                 .map(move |p| hash_tree2(p, hash_pool.clone(), io_pool.clone(), semaphore.clone()));
@@ -330,8 +331,9 @@ fn hash_tree2(p: PathBuf, hash_pool: HashPool, io_pool: IOPool, semaphore: Semap
             for_stream!((hash in stream::futures_ordered(child_hashes)) {
                 hasher.input(&hash[..]);
             });
-            finish_sha256(hasher)
+            Ok(finish_sha256(hasher))
         } else {
+            let guard = await!(semaphore.increment())?;
             let num_threads = hash_pool.num_threads;
             let stream = io_pool.stream_file(p)
                 .map(move |block| hash_pool.hash(block))
@@ -341,10 +343,9 @@ fn hash_tree2(p: PathBuf, hash_pool: HashPool, io_pool: IOPool, semaphore: Semap
             for_stream!((block_hash in stream) {
                 hasher.input(&block_hash[..]);
             });
-            finish_sha256(hasher)
-        };
-        drop(guard);
-        Ok(result)
+            drop(guard);
+            Ok(finish_sha256(hasher))
+        }
     })
 }
 
