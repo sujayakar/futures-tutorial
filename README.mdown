@@ -2,6 +2,17 @@
  - `futures-rs` version 0.1.17
  - `rustc` 2018-04-29 nightly
 
+Familiarity with some advanced Rust concepts will be helpful too.
+ - Iterators: They're often pretty similar to futures in implementation
+ - Borrow checker: Moving into closures and lifetimes
+ - Traits, associated types, trait objects, and `impl Trait`
+
+The [Rust book 2.0](https://doc.rust-lang.org/book/second-edition/) is a good
+resource.
+
+Also, watch [Alex Crichton's talk](https://www.youtube.com/watch?v=bcrzfivXpc4)
+from 2016 on the high-level idea for futures.  It's still very current.
+
 # Format
 Inside `src/bin` there's exercise files `exercise1.rs`, `exercise2.rs`, and so
 on.  Each has instructions at the top with suggested code to read under `src/`
@@ -12,3 +23,16 @@ Recall that you can run a binary directly with `cargo`:
 ```
 $ cargo run --release --bin exercise1 -- <args>
 ```
+
+# TODO
+[ ] Exercise 3: Async filesystem IO and async/await
+[ ] Exercise 4: Building a semaphore with "shared memory"
+[ ] Exercise 5: Map async/await to combinators
+[ ] Exercise 6: Implement explicit `and_then` state machine
+[ ] Exercise 7: Implement `oneshot` with task wakeups
+[ ] Performance tuning with Cyclotron
+
+# Appendix
+- https://aturon.github.io/apr/async-in-rust/chapter.html
+- https://tokio.rs/docs/getting-started/futures/
+- http://aturon.github.io/2018/02/27/futures-0-2-RC/
