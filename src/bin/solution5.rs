@@ -1,6 +1,6 @@
 extern crate crypto;
 extern crate futures;
-extern crate hex_slice;
+extern crate hex;
 extern crate futures_tutorial;
 
 use std::io::{
@@ -11,7 +11,7 @@ use std::path::PathBuf;
 use futures::{stream, Future, Stream};
 use crypto::digest::Digest;
 use crypto::sha2::Sha256;
-use hex_slice::AsHex;
+use hex::ToHex;
 use futures_tutorial::{path_filename, finish_sha256};
 use futures_tutorial::hash_pool::HashPool;
 use futures_tutorial::io_pool::IOPool;
@@ -77,6 +77,6 @@ fn main() -> Result<(), io::Error> {
     let path_str = std::env::args().nth(1).unwrap_or_else(|| ".".to_owned());
     let path = PathBuf::from(path_str);
     let result = hash_tree(path.clone(), hash_pool, io_pool, semaphore).wait()?;
-    println!("Final result: {:?} -> {:x}", path, result.as_hex());
+    println!("Final result: {:?} -> {}", path, result.to_hex());
     Ok(())
 }

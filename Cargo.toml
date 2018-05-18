@@ -5,7 +5,8 @@ authors = ["Sujay Jayakar <sujayakar314@gmail.com>"]
 
 [dependencies]
 crossbeam-channel = "0.1.2"
-hex-slice = "0.1.4"
+
+hex = "0.2.0"
 futures = "0.1.17"
 futures-cpupool = "0.1.8"
 rust-crypto = "0.2.36"

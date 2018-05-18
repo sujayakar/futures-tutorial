@@ -5,7 +5,8 @@
 // Step 5: Implement `Semaphore`: teaches "shared-memory" style programming with `Rc` and `RefCell`.
 // Step 6: Re-implement Step 4 with combinators.
 // Step 7: Manually implement `and_then` and use it yourself.
-// Step 8: Re-implement `Semaphore` with manual task parking.
+// Step 8: Re-implement `oneshot` with manual task parking.
+// Step 9: Performance tuning with Cyclotron.
 
 #![feature(catch_expr)]
 #![feature(generators)]

@@ -1,0 +1,14 @@
+# Prerequisites
+ - `futures-rs` version 0.1.17
+ - `rustc` 2018-04-29 nightly
+
+# Format
+Inside `src/bin` there's exercise files `exercise1.rs`, `exercise2.rs`, and so
+on.  Each has instructions at the top with suggested code to read under `src/`
+and functions to complete inline.  If you ever get stuck, there's always a
+correponding `solutions?.rs` file in the same directory.
+
+Recall that you can run a binary directly with `cargo`:
+```
+$ cargo run --release --bin exercise1 -- <args>
+```
