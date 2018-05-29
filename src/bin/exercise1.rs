@@ -36,10 +36,7 @@ use std::path::PathBuf;
 use crypto::digest::Digest;
 use crypto::sha2::Sha256;
 use hex::ToHex;
-use futures_tutorial::{
-    path_filename,
-    finish_sha256,
-};
+use futures_tutorial::finish_sha256;
 
 fn hash_tree(path: PathBuf, block_size: usize) -> io::Result<[u8; 32]> {
     let mut hasher = Sha256::new();
@@ -69,10 +66,22 @@ fn hash_tree(path: PathBuf, block_size: usize) -> io::Result<[u8; 32]> {
         }
         hasher.input(buffer.as_slice());
     } else {
-        // TODO: fill this up in async way
+        // TODO: can we make it parallel and join()?
+        hash_file(&path, block_size, &mut hasher);
     }
     let res = finish_sha256(hasher);
     Ok(res)
+}
+
+fn hash_file(path: &PathBuf, block_size: usize, hasher: &mut Sha256) {
+    let mut f = File::open(path).unwrap();
+    let mut buffer = vec![0;block_size];
+
+    loop {
+        let read_count = f.read(&mut buffer).unwrap();
+        if read_count == 0 { return }
+        hasher.input(&buffer[..read_count]);
+    }
 }
 
 fn main() -> Result<(), io::Error> {
