@@ -67,20 +67,24 @@ fn hash_tree(path: PathBuf, block_size: usize) -> io::Result<[u8; 32]> {
         hasher.input(buffer.as_slice());
     } else {
         // TODO: can we make it parallel and join()?
-        hash_file(&path, block_size, &mut hasher);
+        for chunk_hash in hash_file(&path, block_size)?.iter() {
+            hasher.input(chunk_hash);
+        }
     }
     let res = finish_sha256(hasher);
     Ok(res)
 }
 
-fn hash_file(path: &PathBuf, block_size: usize, hasher: &mut Sha256) {
-    let mut f = File::open(path).unwrap();
+fn hash_file(path: &PathBuf, block_size: usize) -> io::Result<Vec<[u8; 32]>> {
+    let mut f = File::open(path)?;
     let mut buffer = vec![0;block_size];
-
+    let mut result = vec![];
     loop {
-        let read_count = f.read(&mut buffer).unwrap();
-        if read_count == 0 { return }
+        let read_count = f.read(&mut buffer)?;
+        let mut hasher = Sha256::new();
+        if read_count == 0 { return Ok(result) }
         hasher.input(&buffer[..read_count]);
+        result.push(finish_sha256(hasher));
     }
 }
 
