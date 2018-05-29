@@ -26,6 +26,7 @@ extern crate hex;
 extern crate futures_tutorial;
 
 use std::fs::File;
+use std::fs;
 use std::io::{
     self,
     Read,
@@ -41,7 +42,37 @@ use futures_tutorial::{
 };
 
 fn hash_tree(path: PathBuf, block_size: usize) -> io::Result<[u8; 32]> {
-    unimplemented!();
+    let mut hasher = Sha256::new();
+    let mut buffer : Vec<u8> = vec![];
+    if path.is_dir() {
+        let mut paths = vec![];
+        for entry in fs::read_dir(path)? {
+            paths.push(entry?.path());
+        }
+        paths.sort();
+
+        // TODO: can we make it parallel and join()?
+        for ch_path in paths {
+            // TODO: this scope here to make re-borrowing ch_path possible
+            // is it the right way?
+            {
+                let name = ch_path.file_name().unwrap().to_str().unwrap();
+                // TODO: replace it by append somehow?
+                for byte in name.as_bytes() {
+                    buffer.push(*byte);
+                }
+            }
+            
+            for byte in hash_tree(ch_path, block_size)?.iter() {
+                buffer.push(*byte);
+            }
+        }
+        hasher.input(buffer.as_slice());
+    } else {
+        // TODO: fill this up in async way
+    }
+    let res = finish_sha256(hasher);
+    Ok(res)
 }
 
 fn main() -> Result<(), io::Error> {
