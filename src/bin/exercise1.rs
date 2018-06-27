@@ -19,7 +19,8 @@
 //! - "examples/UCD/NormalizationTest.txt" -> 73963f19ac74888b08db2e09c3660edc5bd750ab473d9e27301666e0537b7f18
 //! - "examples/UCD" -> 94ed5176652e905430ba509d89adb0a3863b15c61a672899169558b049e18a28
 //! Be sure that your implementation matches, and then you can always go back to
-//! this simple sequential version as we start to parallelize it.
+//! this simple sequential version as we start to parallelize it.  Write a unit
+//! test that checks the examples given above.
 
 extern crate crypto;
 extern crate hex;

@@ -25,12 +25,12 @@ $ cargo run --release --bin exercise1 -- <args>
 ```
 
 # TODO
-- [ ] Exercise 3: Async filesystem IO and async/await
 - [ ] Exercise 4: Building a semaphore with "shared memory"
 - [ ] Exercise 5: Map async/await to combinators
 - [ ] Exercise 6: Implement explicit `and_then` state machine
 - [ ] Exercise 7: Implement `oneshot` with task wakeups
 - [ ] Performance tuning with Cyclotron
+- [ ] Write high level goals here
 
 # Appendix
 - https://aturon.github.io/apr/async-in-rust/chapter.html

@@ -1,7 +1,7 @@
 //! If you're looking at `Future`s for the first time, just take a look at
 //! `hash`'s signature here and move on.  It takes in a buffer and returns
 //! something that implements `Future`, returning a `[u8; 32]` on success and an
-//! `io:Error` on failure.
+//! `io::Error` on failure.
 //!
 //! Otherwise, how are `Future`s built?  Across thread boundaries, they often
 //! use `oneshot::channel`s, a channel for communicating just a single value.

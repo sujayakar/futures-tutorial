@@ -1,3 +1,14 @@
+//! Just like `hash_pool.rs` returned a `Future` of a buffer's hash, our
+//! `IOPool` will return a `Stream` of a file's contents.  Take a look at
+//! `stream_file`'s signature: It takes in a path and returns a stream of
+//! buffers, failing with `io::Error`.  Streams are just like futures but can
+//! return multiple results instead of a single one.
+//!
+//! Constructing a `Stream` across thread boundaries often involves using a
+//! `futures::sync::mpsc`, or multiple producer single consumer channel.  The
+//! consuming side of the channel implements `Stream`, yielding values that were
+//! sent on the other side.  The stream ends when the last producer drops.
+//!
 use std::io::{self, Read};
 use std::fs::File;
 use std::thread;
@@ -32,11 +43,15 @@ impl IOPool {
     }
 
     pub fn stream_file(&self, path: PathBuf) -> impl Stream<Item=Vec<u8>, Error=io::Error> {
+        // Since we're bounding this channel, an IO thread can block if a
+        // consumer is slow.  This prevents the IO thread from buffering an
+        // unbounded number of blocks.
         let (tx, rx) = mpsc::channel(self.window_size);
         self.sender.send(StreamFileRequest(path, tx))
             .expect("Unbounded channel can't overflow");
         rx.then(|r| match r {
             Ok(r) => r,
+            // If the other side hung-up, consider the request interrupted.
             Err(_) => Err(io::ErrorKind::Interrupted.into()),
         })
     }
